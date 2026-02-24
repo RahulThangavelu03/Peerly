@@ -37,13 +37,13 @@ useEffect(() => {
 
   return (
     <>
-<h2>Bulk Share</h2>
+<h2>Peerly</h2>
 
 <BrowserRouter>
 <Routes>
 
 <Route path = "/" element={<HomePage socket={socket} setinRoom={setinRoom} setroomId={setroomId}   username={username} setUserName={setUserName} ></HomePage>}/>
-<Route path= "/room/:roomId" element={<ProctedRoute inRoom={inRoom} ><RoomPage roomId={roomId} socket={socket} isHost={isHost} canSend={cansend} setCanSend={setCanSend}/></ProctedRoute>}/> 
+<Route path= "/room/:roomId" element={<ProctedRoute inRoom={inRoom} ><RoomPage roomId={roomId} socket={socket} isHost={isHost} canSend={cansend} setCanSend={setCanSend} username={username}/></ProctedRoute>}/> 
 
 
 

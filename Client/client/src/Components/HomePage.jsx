@@ -42,12 +42,15 @@ const roomId= generateRandomAlphaNumeric(8)
 setroomId(roomId)
 
 
-socket.emit("create-room", roomId,username)
+// socket.emit("create-room", roomId,username)
 
 
 setinRoom(true)
 
-Navigate(`/room/${roomId}`)
+
+Navigate(`/room/${roomId}`, { state: { role: "host" } })
+
+
 
 }
 
@@ -74,18 +77,17 @@ console.log(joinId.length,"id length")
 
     if(joinId.length==0) return 
 
-console.log("excution aafter length")
-
-
-
-socket.emit("join-room", joinId,(response) => {
+socket.emit("join-room", {roomId : joinId,username},(response) => {
   if (!response?.success) {
     alert("Room not found");
     return;
   }
 
+
   setinRoom(true);
-  Navigate(`/room/${joinId}`);
+
+  
+Navigate(`/room/${joinId}`, { state: { role: "participant" } })
 })
 
 }

@@ -23,7 +23,14 @@ console.log(socket.data.roomId,"socket.data.roomID 16")
       }
     };
 
+
+
     socket.join(roomId);
+
+    socket.emit("room-users", rooms[roomId].users);  // send only to this user
+io.to(roomId).emit("room-users", rooms[roomId].users);
+    console.log(rooms[roomId],"roomId-roomuser 30000///////////////") 
+
 
     socket.emit("room-role", {
       isHost: true,
@@ -35,6 +42,7 @@ console.log(socket.data.roomId,"socket.data.roomID 16")
 
   socket.on("join-room", ({roomId,username},callback) => {
    
+  socket.data.roomId = roomId;
 
     if (!rooms[roomId]) {
       console.log("Room not found");
@@ -46,9 +54,14 @@ console.log(socket.data.roomId,"socket.data.roomID 16")
 
     socket.join(roomId);
 
+    socket.emit("room-users", rooms[roomId].users);
+io.to(roomId).emit("room-users", rooms[roomId].users);
+
+    
+    console.log(rooms[roomId],"roomId-roomuser 55///////////////") 
 
 
-    socket.emit("room-role", {
+socket.emit("room-role", {
       isHost: false,
       canSend: false
     });
@@ -102,6 +115,37 @@ if (!rooms[roomId] || !rooms[roomId].users[targetId]) return;
   socket.on("disconnect", () => {
     console.log("Disconnected:", socket.id);
   });
+
+
+
+//WebRTC//
+
+
+socket.on("webrtc-offer", ({ targetId, offer }) => {
+  io.to(targetId).emit("webrtc-offer", {
+    offer,
+    senderId: socket.id
+  });
+});
+
+socket.on("webrtc-answer", ({ targetId, answer }) => {
+  io.to(targetId).emit("webrtc-answer", {
+    answer
+  });
+});
+
+socket.on("webrtc-ice", ({ targetId, candidate }) => {
+  io.to(targetId).emit("webrtc-ice", {
+    candidate
+  });
+});
+
+
+
+
+
+
+
 });
 
 const PORT = 5000;
@@ -109,3 +153,5 @@ const PORT = 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
