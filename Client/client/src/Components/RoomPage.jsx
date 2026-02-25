@@ -167,17 +167,35 @@ console.log( targetId,"startwebrtctccccccc")
       console.log("Receiving file:", message.name);
     }
 
-    if (message.type === "file-complete") {
-      const blob = new Blob(receivedChunks.current);
-      const url = URL.createObjectURL(blob);
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = receivedFileInfo.current.name;
-      a.click();
 
-      console.log("File received successfully 🎉");
-    }
+    console.log("Chunks received:", receivedChunks.current.length);
+console.log("Expected size:", receivedFileInfo.current.size);
+
+
+  
+
+if (message.type === "file-complete") {
+  const blob = new Blob(receivedChunks.current);
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.style.display = "none";
+  a.href = url;
+  a.download = receivedFileInfo.current.name;
+
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  console.log("File received successfully 🎉");
+}
+
+
+
   } else {
     // Binary chunk
     receivedChunks.current.push(event.data);
@@ -328,6 +346,10 @@ async function HandleFileSelect(e) {
 
   console.log("File sent successfully 🚀");
 }
+
+
+
+console.log(blob.size,"blobsize|||||||||||||||||||||")
 
 
   return (
