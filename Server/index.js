@@ -40,34 +40,44 @@ io.to(roomId).emit("room-users", rooms[roomId].users);
 
 
 
-  socket.on("join-room", ({roomId,username},callback) => {
-   
+  socket.on("join-room", ({ roomId, username }, callback) => {
+
   socket.data.roomId = roomId;
 
-    if (!rooms[roomId]) {
-      console.log("Room not found");
-      return;
+  // Room does not exist
+  if (!rooms[roomId]) {
+    console.log("Room not found");
+
+    if (typeof callback === "function") {
+      callback({ success: false, message: "Room not found" });
     }
+    return;
+  }
 
-   
- rooms[roomId].users[socket.id] = { canSend: false ,name:username, displayName: `${username} (${socket.id.slice(0,4).toUpperCase()})` };
+  // Add user
+  rooms[roomId].users[socket.id] = {
+    canSend: false,
+    name: username,
+    displayName: `${username} (${socket.id.slice(0,4).toUpperCase()})`
+  };
 
-    socket.join(roomId);
+  socket.join(roomId);
 
-    socket.emit("room-users", rooms[roomId].users);
-io.to(roomId).emit("room-users", rooms[roomId].users);
+  // Update everyone in room
+  io.to(roomId).emit("room-users", rooms[roomId].users);
 
-    
-    console.log(rooms[roomId],"roomId-roomuser 55///////////////") 
-
-
-socket.emit("room-role", {
-      isHost: false,
-      canSend: false
-    });
-callback({success:true})
-
+  socket.emit("room-role", {
+    isHost: false,
+    canSend: false
   });
+
+  console.log("User joined:", username);
+
+  if (typeof callback === "function") {
+    callback({ success: true });
+  }
+
+});
 
   
 

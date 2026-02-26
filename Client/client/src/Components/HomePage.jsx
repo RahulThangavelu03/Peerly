@@ -56,41 +56,30 @@ Navigate(`/room/${roomId}`, { state: { role: "host" } })
 
 
 
-const JoinRoom = ()=>
-    {
+const JoinRoom = () => {
 
-
-
-
-if (!username || username.trim().length < 1) {
-  alert("please enter your name");
-  return;
-}
-
-
-console.log("joinrooom fcutioonn")
-
-    console.log(joinId,"joiId")
-
-    
-console.log(joinId.length,"id length")
-
-    if(joinId.length==0) return 
-
-socket.emit("join-room", {roomId : joinId,username},(response) => {
-  if (!response?.success) {
-    alert("Room not found");
+  if (!username || username.trim().length < 1) {
+    alert("Please enter your name");
     return;
   }
 
+  if (!joinId || joinId.length === 0) {
+    alert("Enter a valid Room ID");
+    return;
+  }
 
-  setinRoom(true);
+  socket.emit("join-room", { roomId: joinId, username }, (response) => {
 
-  
-Navigate(`/room/${joinId}`, { state: { role: "participant" } })
-})
+    if (!response?.success) {
+      alert(response?.message || "Room not found");
+      return;
+    }
 
-}
+    setinRoom(true);
+    Navigate(`/room/${joinId}`, { state: { role: "participant" } });
+
+  });
+};
 
 
 
