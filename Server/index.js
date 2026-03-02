@@ -28,7 +28,10 @@ console.log(socket.data.roomId,"socket.data.roomID 16")
     socket.join(roomId);
 
     socket.emit("room-users", rooms[roomId].users);  // send only to this user
-io.to(roomId).emit("room-users", rooms[roomId].users);
+ io.to(roomId).emit("room-users", rooms[roomId].users);
+
+
+
     console.log(rooms[roomId],"roomId-roomuser 30000///////////////") 
 
 
@@ -63,8 +66,13 @@ io.to(roomId).emit("room-users", rooms[roomId].users);
 
   socket.join(roomId);
 
+console.log(rooms[roomId],"rooms[roomId]")
+
+
+
   // Update everyone in room
   io.to(roomId).emit("room-users", rooms[roomId].users);
+ 
 
   socket.emit("room-role", {
     isHost: false,
@@ -122,9 +130,59 @@ if (!rooms[roomId] || !rooms[roomId].users[targetId]) return;
     });
   });
 
-  socket.on("disconnect", () => {
-    console.log("Disconnected:", socket.id);
-  });
+ 
+
+// socket.on("disconnect", (id) => {
+//   console.log("Disconnected:", socket.id);
+
+//   const roomId = socket.data.roomId;
+//   if (!roomId || !rooms[roomId]) return;
+
+//   // Host leaves
+//   if (rooms[roomId].hostId === socket.id) {
+//     io.to(roomId).emit("room-closed", {
+//       message: "Host has left. Room closed."
+//     });
+
+//     delete rooms[roomId];
+//     return;
+//   }
+
+//   // Participant leaves
+//   delete rooms[roomId].users[socket.id];
+
+//   io.to(roomId).emit("room-users", rooms[roomId].users);
+// });
+
+
+
+socket.on("disconnect", (id) => {
+  console.log("Disconnected:", socket.id);
+
+  const roomId = socket.data.roomId;
+  if (!roomId || !rooms[roomId]) return;
+
+  // Host leaves
+  if (rooms[roomId].hostId === socket.id) {
+    io.to(roomId).emit("room-closed", {
+      message: "Host has left. Room closed."
+    });
+
+    delete rooms[roomId];
+    return;
+  }
+
+  // Participant leaves
+  delete rooms[roomId].users[socket.id];
+
+  io.to(roomId).emit("room-users", rooms[roomId].users);
+});
+
+
+
+
+
+
 
 
 

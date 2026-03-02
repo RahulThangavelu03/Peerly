@@ -16,7 +16,9 @@ const [joinId,setjoinId] = useState("")
 
 
 
-const CreateRoom=()=>{
+
+const CreateRoom=()=>
+  {
 
     
 if (!username || username.trim().length < 1 ) {
@@ -34,15 +36,12 @@ if (!username || username.trim().length < 1 ) {
         result += characters.charAt(randomIndex);
     }
 
+
     return result;
 }
 
 
 const roomId= generateRandomAlphaNumeric(8)
-setroomId(roomId)
-
-
-// socket.emit("create-room", roomId,username)
 
 
 setinRoom(true)
