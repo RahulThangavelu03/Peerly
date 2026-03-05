@@ -132,32 +132,11 @@ if (!rooms[roomId] || !rooms[roomId].users[targetId]) return;
 
  
 
-// socket.on("disconnect", (id) => {
-//   console.log("Disconnected:", socket.id);
-
-//   const roomId = socket.data.roomId;
-//   if (!roomId || !rooms[roomId]) return;
-
-//   // Host leaves
-//   if (rooms[roomId].hostId === socket.id) {
-//     io.to(roomId).emit("room-closed", {
-//       message: "Host has left. Room closed."
-//     });
-
-//     delete rooms[roomId];
-//     return;
-//   }
-
-//   // Participant leaves
-//   delete rooms[roomId].users[socket.id];
-
-//   io.to(roomId).emit("room-users", rooms[roomId].users);
-// });
 
 
-
-socket.on("disconnect", (id) => {
+socket.on("disconnect", () => {
   console.log("Disconnected:", socket.id);
+ 
 
   const roomId = socket.data.roomId;
   if (!roomId || !rooms[roomId]) return;

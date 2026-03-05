@@ -28,6 +28,7 @@ function RoomPage({ socket, canSend, setCanSend, username }) {
   const peerRef = useRef(null);
 
 const receivedBytes = useRef(0)
+const fileInputRef = useRef(null)
 
   // File receive refs
   const receivedChunks = useRef([]);
@@ -48,21 +49,19 @@ const receivedBytes = useRef(0)
 
   /* ---------------- ROOM USERS ---------------- */
 
-useEffect(()=>{
-
-if(!socket) return 
 
 
-socket.on("room-users",(data)=>{
+useEffect(() => {
+  if (!socket) return;
 
-console.log(data,"data========================")
-setUsers(data)
+  const handler = (data) => {
+    setUsers(data);
+  };
 
-})
+  socket.on("room-users", handler);
 
-
-
-},[socket])
+  return () => socket.off("room-users", handler);
+}, [socket]);
 
 
 
@@ -71,10 +70,12 @@ setUsers(data)
 
 function HandleRoomExit(socket){
 
+  if(!socket) return 
 
-  // console.log(socket,"socket>>>>>>>>>>>>>>>>>>>>>>>>")
 
-  socket.emit("disconnect",socket.id)
+
+  socket.disconnect(); // this triggers real disconnect
+  window.location.href = "/";
 
 
 }
@@ -156,7 +157,12 @@ function HandleRoomExit(socket){
 
     peerRef.current = pc;
 
-    const channel = pc.createDataChannel("chat");
+  
+    const channel = pc.createDataChannel("file", {
+  ordered: false,
+  maxRetransmits: 0
+});
+
     setupDataChannel(channel);
     setDataChannel(channel);
 
@@ -377,6 +383,11 @@ setReceiveProgress(progress);
 
 async function sendFile(file) {
 
+
+
+
+ 
+
  if (!file) {
     alert("No file selected");
     return;
@@ -389,7 +400,7 @@ async function sendFile(file) {
     }
 
 
-  const chunkSize = 256 * 1024; // 64KB
+  const chunkSize = 512 * 1024; // 64KB
   let offset = 0;
 
   dataChannel.send(JSON.stringify({
@@ -416,13 +427,16 @@ async function sendFile(file) {
     const buffer = await chunk.arrayBuffer();
 
     dataChannel.send(buffer);
-    offset += chunkSize;
 
-   // setSendProgress(Math.floor((offset / file.size) * 100));
 
-    
+offset += buffer.byteLength;
 
-const progress = Math.floor((offset / file.size) * 100);
+
+
+const progress = Math.min(
+  Math.floor((receivedBytes.current / receivedFileInfo.current.size) * 100),
+  100
+);
 setSendProgress(progress);
 
 
@@ -430,13 +444,21 @@ setSendProgress(progress);
 
   dataChannel.send(JSON.stringify({ type: "file-complete" }));
    console.log("File sent successfully 🚀");
-  setSelectedFile(null)
+  setSelectedFile(0)
+
+if (fileInputRef.current) {
+  fileInputRef.current.value = "";
+}
   console.log(sendProgress,"sendprogressss??????????????")
 setTimeout(() => setSendProgress(0), 2000);
+
 
 }
 
 
+console.log(selectedFile,"selctefile??????????????????????/")
+
+console.log(sendProgress,"sendprogresssssssssssssss")
 
 
   /* ---------------- UI ---------------- */
@@ -444,9 +466,12 @@ setTimeout(() => setSendProgress(0), 2000);
 
 
 
+
+
   return (
     <div>
       <h2>Room Page</h2>
+      <Button variant ="contained" color="error" onClick={()=>HandleRoomExit(socket)} >Leave Room</Button>
       <p>RoomCode : {roomId}</p>
       {sendProgress > 0 && (
   <div style={{ marginTop: "10px" }}>
@@ -493,7 +518,7 @@ setTimeout(() => setSendProgress(0), 2000);
             <p>No pending requests</p>
           )}
 
-<Button variant ="contained" color="error" onClick={()=>HandleRoomExit(socket)} >Leave Room</Button>
+
           
         </div>
       )}
@@ -517,10 +542,14 @@ setTimeout(() => setSendProgress(0), 2000);
       <div style={{ marginTop: "20px" }}>
         <input
           type="file"
+          ref={fileInputRef}
           onChange={(e)=>setSelectedFile( e.target.files[0])}
           disabled={!isHost && !canSend}
         /><br/><br/>
-        <Button disabled ={!isHost && !canSend} variant="contained" onClick={(e)=>sendFile(selectedFile)} > Click to Send </Button>
+ 
+
+        <Button disabled ={!isHost && !canSend} variant="contained" onClick={()=>sendFile(selectedFile)} > Click to Send </Button>
+        
       </div>
     </div>
   );
