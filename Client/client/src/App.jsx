@@ -38,7 +38,9 @@ useEffect(() => {
 
   return (
     <>
-<h2>Peerly</h2>
+
+
+ <nav id="NavBar"> Byte Bridge</nav>
 
 <BrowserRouter>
 <Routes>

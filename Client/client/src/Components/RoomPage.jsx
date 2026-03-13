@@ -25,10 +25,12 @@ function RoomPage({ socket, canSend, setCanSend, username }) {
 
   const [headCount,setHeadCount] = useState(0)
 
+
   const peerRef = useRef(null);
 
 const receivedBytes = useRef(0)
 const fileInputRef = useRef(null)
+const cancelSendRef = useRef(false);
 
   // File receive refs
   const receivedChunks = useRef([]);
@@ -253,7 +255,25 @@ function HandleRoomExit(socket){
  
 };
 
+console.log(message,"messageeeeeeeeeeeeeeeee")
+
+
+if (message.type === "file-cancel") {
+  console.log("Sender cancelled transfer");
+
+  receivedChunks.current = [];
+  receivedFileInfo.current = null;
+  receivedBytes.current = 0;
+
+  setReceiveProgress(0);
+
+  alert("File transfer cancelled by sender");
+  return;
+}
+
+
     channel.onmessage = (event) => {
+
       if (typeof event.data === "string") {
         const message = JSON.parse(event.data);
         console.log(event.data.byteLength,"Chunk received::::::::::::");
@@ -314,7 +334,7 @@ receivedChunks.current.push(event.data);
 receivedBytes.current += event.data.byteLength;
 
 const progress = Math.floor(
-  (receivedBytes.current / receivedFileInfo.current.size) * 100
+  (receivedBytes.current / receivedFileInfo.current?.size) * 100
 );
 
 setReceiveProgress(progress);
@@ -400,8 +420,10 @@ async function sendFile(file) {
     }
 
 
-  const chunkSize = 512 * 1024; // 64KB
-  let offset = 0;
+  cancelSendRef.current = false;
+
+  const chunkSize = 512 * 1024; 
+
 
   dataChannel.send(JSON.stringify({
     type: "file-info",
@@ -414,7 +436,25 @@ async function sendFile(file) {
  dataChannel.bufferedAmountLowThreshold = 1 * 1024 * 1024; // 1MB
 
 
-  while (offset < file.size) {
+let offSet= 0
+
+
+
+  while (offSet < file.size) {
+
+
+
+      if (cancelSendRef.current) {
+    console.log("Transfer cancelled ❌");
+
+    dataChannel.send(JSON.stringify({
+      type: "file-cancel"
+    }));
+
+    setSendProgress(0);
+    return;
+
+  }
 
 
     if (dataChannel.bufferedAmount > 5 * 1024 * 1024) {
@@ -423,13 +463,14 @@ async function sendFile(file) {
       });
     }
 
-    const chunk = file.slice(offset, offset + chunkSize);
+    const chunk = file.slice(offSet, offSet + chunkSize);
     const buffer = await chunk.arrayBuffer();
 
     dataChannel.send(buffer);
 
 
-offset += buffer.byteLength;
+
+    offSet += buffer.byteLength;
 
 
 
@@ -459,6 +500,22 @@ setTimeout(() => setSendProgress(0), 2000);
 console.log(selectedFile,"selctefile??????????????????????/")
 
 console.log(sendProgress,"sendprogresssssssssssssss")
+
+
+
+
+function HandleCancelSend(){
+
+
+  cancelSendRef.current = true;
+
+
+}
+
+
+
+
+
 
 
   /* ---------------- UI ---------------- */
@@ -549,6 +606,10 @@ console.log(sendProgress,"sendprogresssssssssssssss")
  
 
         <Button disabled ={!isHost && !canSend} variant="contained" onClick={()=>sendFile(selectedFile)} > Click to Send </Button>
+        
+
+        <Button disabled ={!isHost && !canSend} variant="contained" color="error" onClick={()=>HandleCancelSend()} > Cancel Send </Button>
+
         
       </div>
     </div>

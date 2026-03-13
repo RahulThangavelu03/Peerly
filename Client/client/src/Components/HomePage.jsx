@@ -5,6 +5,7 @@ import React from "react"
 import { useEffect,useState } from "react";
 
 import { useNavigate } from "react-router-dom";
+import Input from "@mui/material/Input";
 
 function HomePage({socket,setinRoom,setroomId,username,setUserName}){
 
@@ -85,29 +86,110 @@ const JoinRoom = () => {
     return(
 
         <div>
-HomePage<br/><br/>
+
+<div id="IntroSection">
+
+
+<div>
+   Real-Time File Transfer 
+
+</div>
+<div>
+  
+  Create a room, share the code, and transfer files      |
+|                instantly between devices.
+</div>
+<div>
+  
+  <TextField  label = "Please Enter Your Name" variant="outlined" value={username} onChange={(e)=>setUserName(e.target.value)}></TextField>
+</div>
+
+<div id="IntroSection-ButtonSection">
+<Button onClick={CreateRoom}>Create Room</Button>
+
+</div>
+
+<div>OR</div>
+
+
+<TextField  label="Please Enter Your Name" value={joinId}  variant="outlined" onChange={(e)=>setjoinId(e.target.value)}></TextField>
+
+<Button onClick={JoinRoom}>Join Room</Button>
 
 
 
 
-      <TextField id="outlined-basic" label="Enter your Name"  value={username} variant="outlined" onChange={(e)=>setUserName(e.target.value)} /><br/><br/>
+
+<div id="Features">
+
+<div id="Features_heading">Features</div>
+
+<div id="Features_Points">
+
+<div className="Feature_Card">
+
+<div>Real Time</div>
+<div>Transfer files instantly</div>
 
 
-            <Button variant="contained" onClick={CreateRoom}>Create Room</Button><br/><br/>
-            <div>OR</div>
-
-            <p>Join Room</p>
-
-      <TextField id="outlined-basic" label="Enter Id to Join " variant="outlined" onChange={(e)=>setjoinId(e.target.value)} /><br/><br/>
-
- <Button variant="contained" onClick={JoinRoom}>Join Room</Button>
+</div>
+<div className="Feature_Card">
+  
+<div>Simple Room</div>
+<div>Share rooms with a simple code</div>
 
 
+</div>
+
+<div className="Feature_Card">
+
+<div>Fast Transfer</div>
+<div>Stream files instantly</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="Instructions">
+
+<div> How it Works </div>
+
+<div id="Instructions_Points">
+
+<div>1. Create Room</div>
+
+<div>2. Send Room Id</div>
+
+<div>3. Share Files</div>
+
+
+</div>
+  
+
+
+</div>
 
 
 
 
-        </div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -117,3 +199,4 @@ HomePage<br/><br/>
 
 
 export default HomePage
+
