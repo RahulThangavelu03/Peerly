@@ -103,13 +103,6 @@ function HandleRoomExit(socket){
 
 
 
-
-
-
-
-
-
-
   /* ---------------- PERMISSION SYSTEM ---------------- */
 
   useEffect(() => {
@@ -354,53 +347,6 @@ setReceiveProgress(progress);
   /* ---------------- FILE SEND ---------------- */
 
     
-
-
-//  async function SendFile(file){
-
-
-//   if(!selectedFile) alert("No file selected")
-
-
-//     if (!dataChannel || dataChannel.readyState !== "open") {
-//       alert("No WebRTC connection");
-//       return;
-//     }
-
-
-
-
-
-
-//     const buffer = await file.arrayBuffer();
-//     const chunkSize = 16 * 1024;
-//     let offset = 0;
-
-//     dataChannel.send(JSON.stringify({
-//       type: "file-info",
-//       name: file.name,
-//       size: file.size,
-//       fileType: file.type
-//     }));
-
-//     while (offset < buffer.byteLength) {
-//       const chunk = buffer.slice(offset, offset + chunkSize);
-//       dataChannel.send(chunk);
-//       offset += chunkSize;
-
-//         const progress = Math.floor((offset / buffer.byteLength) * 100);
-//   setSendProgress(progress);
-//     }
-
-//     dataChannel.send(JSON.stringify({ type: "file-complete" }));
-//     console.log("File sent successfully 🚀");
-
-// setSelectedFile(null)
-// setTimeout(() => setSendProgress(0), 2000);
-
-// }
-
-
 async function sendFile(file) {
 
 
@@ -511,13 +457,6 @@ function HandleCancelSend(){
 
 
 }
-
-
-
-
-
-
-
   /* ---------------- UI ---------------- */
 
 

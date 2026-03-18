@@ -4,6 +4,7 @@ import {BrowserRouter,Routes,Route} from "react-router-dom"
 import HomePage from './Components/HomePage'
 import RoomPage from './Components/RoomPage'
 import ProctedRoute from './Components/ProctedRoute'
+import Logo from "./assets/Logo.png"
 
 
 
@@ -38,9 +39,18 @@ useEffect(() => {
 
   return (
     <>
+ 
+
+ 
 
 
- <nav id="NavBar"> Byte Bridge</nav>
+
+ <div id="NavBar">
+  <div className="Logo">
+    <img src="/logo.png" alt="logo" />
+    <span>Byte Bridge</span>
+  </div>
+</div>
 
 <BrowserRouter>
 <Routes>

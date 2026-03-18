@@ -5,7 +5,7 @@ import React from "react"
 import { useEffect,useState } from "react";
 
 import { useNavigate } from "react-router-dom";
-import Input from "@mui/material/Input";
+
 
 function HomePage({socket,setinRoom,setroomId,username,setUserName}){
 
@@ -13,19 +13,35 @@ function HomePage({socket,setinRoom,setroomId,username,setUserName}){
 const Navigate = useNavigate()
 const [joinId,setjoinId] = useState("")
 
+const[createRoomUserName,setCreateRoomUserName] = useState("")
+
+const [joinRoomUserName,setJoinRoomUserName] = useState("")
+
+const [createSubmitted, setCreateSubmitted] = useState(false)
+const [joinroomSubmitted, setJoinRoomSubmitted] = useState(false)
 
 
 
 
-
-const CreateRoom=()=>
+const CreateRoom=(e)=>
   {
 
+e.preventDefault()
+
     
-if (!username || username.trim().length < 1 ) {
-  alert("please enter your name");
-  return;
-}
+
+
+  setCreateSubmitted(true);
+
+
+
+   if (!createRoomUserName || createRoomUserName.trim() === "") {
+    return;
+  }
+
+
+
+setUserName(createRoomUserName)
 
  function generateRandomAlphaNumeric(length) {
 
@@ -52,23 +68,31 @@ Navigate(`/room/${roomId}`, { state: { role: "host" } })
 
 
 
+
+  
+
 }
 
 
 
-const JoinRoom = () => {
+const JoinRoom = (e) => {
 
-  if (!username || username.trim().length < 1) {
-    alert("Please enter your name");
+e.preventDefault()
+
+
+
+  setJoinRoomSubmitted(true);
+
+ if (!joinRoomUserName || joinRoomUserName.trim() === "") {
     return;
   }
 
-  if (!joinId || joinId.length === 0) {
-    alert("Enter a valid Room ID");
-    return;
-  }
 
-  socket.emit("join-room", { roomId: joinId, username }, (response) => {
+
+
+  setUserName(joinRoomUserName)
+
+  socket.emit("join-room", { roomId: joinId, username :joinRoomUserName }, (response) => {
 
     if (!response?.success) {
       alert(response?.message || "Room not found");
@@ -85,7 +109,9 @@ const JoinRoom = () => {
 
     return(
 
-        <div>
+        <div id="HomePage">
+
+
 
 <div id="IntroSection">
 
@@ -94,109 +120,107 @@ const JoinRoom = () => {
    Real-Time File Transfer 
 
 </div>
-<div>
+
+
+
+<div id="FormSection">
   
-  Create a room, share the code, and transfer files      |
-|                instantly between devices.
+  Create a room, share the code, and transfer files      
+               instantly between devices.
 </div>
-<div>
-  
-  <TextField  label = "Please Enter Your Name" variant="outlined" value={username} onChange={(e)=>setUserName(e.target.value)}></TextField>
-</div>
-
-<div id="IntroSection-ButtonSection">
-<Button onClick={CreateRoom}>Create Room</Button>
 
 </div>
 
-<div>OR</div>
 
 
-<TextField  label="Please Enter Your Name" value={joinId}  variant="outlined" onChange={(e)=>setjoinId(e.target.value)}></TextField>
-
-<Button onClick={JoinRoom}>Join Room</Button>
+<div id="form">
 
 
+  <form id="CreateRoom" onSubmit={(e)=>CreateRoom(e)}>
+    <div className="Card_Head">Create Room</div>
 
+
+<TextField   placeholder="Enter Your Name"  value={createRoomUserName} onChange={(e)=>setCreateRoomUserName(e.target.value)}   error={createSubmitted && createRoomUserName === ""}
+  helperText={
+    createSubmitted && createRoomUserName === ""
+      ? "Name is required"
+      : ""
+  } ></TextField>
+
+<Button variant="contained" type="submit">Create Room</Button>
+
+  </form>
+
+
+<div id="OR"> OR </div>
+
+
+  <form id="JoinRoom" onSubmit={(e)=>JoinRoom(e)}>
+
+<div className="Card_Head">Join Room</div>
+
+    <TextField placeholder="Enter Your Name"  value={joinRoomUserName} onChange={(e)=>setJoinRoomUserName(e.target.value)}   error={joinroomSubmitted && joinRoomUserName === ""}
+  helperText={
+    joinroomSubmitted && joinRoomUserName === ""
+      ? "Name is required"
+      : ""
+  } ></TextField>
+    
+    <TextField placeholder="Enter Room ID"  value={joinId} onChange={(e)=>setjoinId(e.target.value)}    error={joinroomSubmitted && joinId === ""}
+  helperText={
+    joinroomSubmitted && joinId === ""
+      ? "Room ID is required"
+      : ""
+  }  ></TextField>
+    <Button variant="contained" type="submit"> Join Room</Button>
+  </form>
+
+
+</div>
 
 
 <div id="Features">
 
-<div id="Features_heading">Features</div>
+<div id="Features_heading"> Features</div>
+
 
 <div id="Features_Points">
 
-<div className="Feature_Card">
 
 <div>Real Time</div>
-<div>Transfer files instantly</div>
-
-
-</div>
-<div className="Feature_Card">
-  
-<div>Simple Room</div>
-<div>Share rooms with a simple code</div>
-
-
-</div>
-
-<div className="Feature_Card">
-
+<div>|</div>
+<div>Simple Rooms</div>
+<div>|</div>
 <div>Fast Transfer</div>
-<div>Stream files instantly</div>
 
 </div>
-
-</div>
-
-</div>
-
-<div id="Instructions">
-
-<div> How it Works </div>
-
-<div id="Instructions_Points">
-
-<div>1. Create Room</div>
-
-<div>2. Send Room Id</div>
-
-<div>3. Share Files</div>
-
-
-</div>
-  
 
 
 </div>
 
 
+<div id="Guide">
 
+  <div id="Guide_heading">How it is done</div>
+
+  <div id="Guide_Points">
+    <div class="Guide_Step">Create Room</div>
+    <div class="Guide_Step">Send Code</div>
+    <div class="Guide_Step">Share Files</div>
+  </div>
+
+</div>
 
 
 
 </div>
 
 
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-    )
+)
 
 }
 
 
 export default HomePage
 
+ 
