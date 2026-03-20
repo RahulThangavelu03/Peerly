@@ -92,17 +92,32 @@ e.preventDefault()
 
   setUserName(joinRoomUserName)
 
-  socket.emit("join-room", { roomId: joinId, username :joinRoomUserName }, (response) => {
+  // socket.emit("join-room", { roomId: joinId, username :joinRoomUserName }, (response) => {
 
-    if (!response?.success) {
-      alert(response?.message || "Room not found");
-      return;
-    }
+  //   if (!response?.success) {
+  //     alert(response?.message || "Room not found");
+  //     return;
+  //   }
 
-    setinRoom(true);
-    Navigate(`/room/${joinId}`, { state: { role: "participant" } });
+  //   setinRoom(true);
+  //   Navigate(`/room/${joinId}`, { state: { role: "participant" } });
 
-  });
+  // });
+
+
+
+
+  Navigate(`/Lobby/${joinId}`)
+
+
+
+
+
+
+
+
+
+
 };
 
 

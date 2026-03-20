@@ -342,3 +342,56 @@ body {
 .MuiFormControl-root {
   width: 100%;
 }
+
+
+
+#Lobby {
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+}
+
+/* Center container */
+#LobbyContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 25px;
+
+  text-align: center;
+}
+
+/* Spinner */
+#Spinner {
+  width: 70px;
+  height: 70px;
+
+  border: 4px solid rgba(255,255,255,0.2);
+  border-top-color: white;
+  border-radius: 50%;
+
+  animation: spin 1s linear infinite;
+}
+
+/* Text */
+#LobbyText {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+#LobbySubText {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* Animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -4,9 +4,8 @@ import {BrowserRouter,Routes,Route} from "react-router-dom"
 import HomePage from './Components/HomePage'
 import RoomPage from './Components/RoomPage'
 import ProctedRoute from './Components/ProctedRoute'
-import Logo from "./assets/Logo.png"
 
-
+import Lobby from './Components/Lobby'
 
 
 
@@ -57,7 +56,7 @@ useEffect(() => {
 
 <Route path = "/" element={<HomePage socket={socket} setinRoom={setinRoom} setroomId={setroomId}   username={username} setUserName={setUserName} ></HomePage>}/>
 <Route path= "/room/:roomId" element={<ProctedRoute inRoom={inRoom} ><RoomPage roomId={roomId} socket={socket} isHost={isHost} canSend={cansend} setCanSend={setCanSend} username={username}/></ProctedRoute>}/> 
-
+<Route path="/Lobby/:roomId" element ={<Lobby></Lobby>}></Route>
 
 
 </Routes>
