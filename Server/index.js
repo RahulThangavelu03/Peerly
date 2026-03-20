@@ -27,7 +27,7 @@ console.log(socket.data.roomId,"socket.data.roomID 16")
 
     socket.join(roomId);
 
-    socket.emit("room-users", rooms[roomId].users);  // send only to this user
+    socket.emit("room-users", rooms[roomId].users);  
  io.to(roomId).emit("room-users", rooms[roomId].users);
 
 
